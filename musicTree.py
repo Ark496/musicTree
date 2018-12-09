@@ -27,7 +27,7 @@ class Window(QMainWindow):
 
 		self.title = "musicTree"
 		self.top = 0
-		self.left = 2000
+		self.left = 1000
 		self.width = 400
 		self.height = 600
 
@@ -151,5 +151,6 @@ def differenceOfTime():
 	#月が何日かとかも取得できる
 
 if __name__ == '__main__':
+	print ("test")
 	#differenceOfTime()
 	main()
