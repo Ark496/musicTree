@@ -5,7 +5,8 @@ from PyQt5 import QtGui
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QToolTip, QMessageBox, QAbstractButton
 from PyQt5.QtCore import QDateTime, QDate,QTime, Qt, QCoreApplication,QSize
-
+import musicInfo as musInf
+import matplotlib.pyplot as plt
 class PicButton(QAbstractButton):
     def __init__(self, pixmap, parent=None):
         super(PicButton, self).__init__(parent)
@@ -18,10 +19,14 @@ class PicButton(QAbstractButton):
     def sizeHint(self):
         return self.pixmap.size()
 
+def create_QPixmap(image):
+	#qimage = QtGui.QImage(image.data, image.shape[1], image.shape[0], image.shape[1] * 4, QtGui.QImage.Format_ARGB32_Premultiplied)
+	pixmap = QtGui.QPixmap.fromImage(image)
+	return pixmap
 
 class Window(QMainWindow):
 	#コンストラクタ
-	def __init__(self):
+	def __init__(self,path1,path2):
 		#親クラス初期化
 		super().__init__()
 
@@ -95,6 +100,21 @@ class Window(QMainWindow):
 		self.button4.clicked.connect(self.printMessage)
 		"""
 		self.InitWindow()
+		self.music = ["",""]
+		self.setMusic(n = 0,path = path1)
+		self.setMusic(n = 1,path = path2)
+	def setMusic(self,n,path):
+		self.music[n] = musInf.musInfo(path)
+		print(self.music[n].title)
+		#plt.imshow(self.music[n].img_numpy)
+		#plt.show()
+		pic = QtGui.QIcon(variant = self.music[n].img_numpy)
+		#pic = create_QPixmap(self.music[n].img_pil.convert("RGBA"))
+		#if n == 0:
+		#	self.JacketButton1.setIcon(QtGui.QIcon(pic))
+		#else:
+		#	self.JacketButton2.setIcon(QtGui.QIcon(pic))
+
 
 	def InitWindow(self):
 		#多分構造体内で設定された内容から設定を作ってる？
@@ -126,7 +146,9 @@ class Window(QMainWindow):
 
 def main():
 	App = QApplication(sys.argv)
-	window = Window()
+	path1 = r"/Users/arc/Music/iTunes/iTunes Media/Music/Toby Fox/DELTARUNE Chapter 1 OST/33 THE WORLD REVOLVING.mp3"
+	path2 = r"/Users/arc/Music/iTunes/iTunes Media/Music/Toby Fox/DELTARUNE Chapter 1 OST/33 THE WORLD REVOLVING.mp3"
+	window = Window(path1,path2)
 	sys.exit(App.exec())
 
 def differenceOfTime():
