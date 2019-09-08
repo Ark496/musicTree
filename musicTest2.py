@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os,sys
-import eyed3 as eyeD3
+#import eyed3 as eyeD3
 import wave
 import pygame.mixer
 import time
@@ -29,8 +29,8 @@ def getFilename(TARGETDIR):
 			#if path.endswith(".mp3") | path.endswith("m4a"):
 			if path.endswith(".mp3"):
 				pathlist.append(path);
-				a=a+1;
-	return pathlist;
+				a=a+1
+	return pathlist
 
 #change allpath -> lastname
 def getmusicname(path):
@@ -65,7 +65,7 @@ def checkOS():
 
 def playMusic(x):
 	#print x["path"]
-	print x["music"]
+	print(x["music"])
 	#windows:pygame
 	if checkOS() == "win32":
 		pygame.mixer.init()
@@ -73,54 +73,58 @@ def playMusic(x):
 			pygame.mixer.music.load(x["path"].encode("utf-8"))
 			pygame.mixer.music.play(0,10)
 		except:
-			print "Maybe [%s] cannot be played on this OS"%x["music"]
+			print("Maybe [%s] cannot be played on this OS"%x["music"])
 	else:
 		#速度変更とかできるけどどうする
-		os.system("afplay "+x["path"].encode("utf-8"))
+		#print(type(x["path"]))
+		command = "afplay "+x["path"].replace(" ","\\ ")
+		print(command)
+		#os.system(command)
 
 # user decision
 def dicision(node, x):
 	#print node
 	#print x
-	print u'(0):%s\n(1):%s'%(node.data["music"],x["music"])
-	print u'(2):再生(0)\n(3):再生(1)\n(4):一時停止\n(5):一時停止解除'
+	print(u'(0):%s\n(1):%s'%(node.data["music"],x["music"]))
+	print(u'(2):再生(0)\n(3):再生(1)\n(4):一時停止\n(5):一時停止解除')
 	while(True):
-		input = raw_input()
-		if(input == "0"):
+		inputstr= input()
+		if(inputstr== "0"):
 			return False
-		elif(input == "1"):
+		elif(inputstr== "1"):
 			return True
-		elif(input == "2"):
+		elif(inputstr== "2"):
 			#音楽再生
 			playMusic(node.data)
 			pass
-		elif(input == "3"):
+		elif(inputstr== "3"):
 			playMusic(x)
 			pass
-		elif(input == "4"):
+		elif(inputstr== "4"):
 			pygame.mixer.music.pause();
-		elif(input == "5"):
+		elif(inputstr== "5"):
 			pygame.mixer.music.unpause();
 		else:
 			pass	
 
 # 挿入
 def musicinsert(node, x, func):
-  if node is rb.null: return rb.Node(x), False
-  if func(node,x):
-		node.left, flag = musicinsert(node.left, x,func)
+	if node is rb.null: 
+		return rb.Node(x), False
+	if func(node,x):
+		node.left,flag = musicinsert(node.left,x,func)
 		return rb.balance_insert_left(node, flag)
-  else:
+	else:
 		node.right, flag = musicinsert(node.right, x,func)
 		return rb.balance_insert_right(node, flag)
-  return node, True
+	return node, True
 # 木の表示
 def print_node_music(node, n):
-    color = ('B', 'R')
-    if node is not rb.null:
-        print_node_music(node.left, n + 1)
-        print '    ' * n, color[node.color],node.data["music"]
-        print_node_music(node.right, n + 1)
+	color = ('B', 'R')
+	if node is not rb.null:
+		print_node_music(node.left, n + 1)
+		print('    ' * n, color[node.color],node.data["music"])
+		print_node_music(node.right, n + 1)
 
 def addCategory(categorystr,category,music,num):
 	#numはカテゴリ数。0だといくつでも入れられる。ジャンルの場合は1つでよくね…?
@@ -137,31 +141,31 @@ def addCategory(categorystr,category,music,num):
 		#カテゴリ追加が以上であるか聞く
 		#print len(music[categorystr])
 		if len(music[categorystr])>=1:
-			print u"now [%s] have..."%music["music"]
+			print(u"now [%s] have..."%music["music"])
 			for i in music[categorystr]:
-				print category[i]
+				print(category[i])
 			#print u"Wat is [%s]'s "%(music["music"])+categorystr+u" ?"
 			sys.stdout.write(u"append "+categorystr+u" is over?(何か入力したら終了):")
-			if raw_input()!= "":
+			if input()!= "":
 				break
 		while True:
 			#既存カテゴリを表示
 			for i in range(len(category)):
-				print "("+str(i)+")",category[i]
+				print("("+str(i)+")",category[i])
 			#追加する選択肢
-			print u"(999):other "+categorystr	
-			input = raw_input()
+			print(u"(999):other "+categorystr)
+			inputstr = input()
 			#print type(input)
-			if input == "":
+			if inputstr == "":
 				continue
-			input = int(input)
-			if not input in range(len(category)):
-				if input == 999:
+			inputnumber = int(inputstr)
+			if not inputnumber in range(len(category)):
+				if inputstr== 999:
 					#add janl
 					sys.stdout.write (u'what is the '+categorystr+u" ?:")
-					input = raw_input()
+					inputstr = input()
 					#janlリストにジャンル追加
-					if input != "":
+					if inputstr!= "":
 						category.append(input)
 				continue
 			else:
@@ -173,10 +177,10 @@ def addCategory(categorystr,category,music,num):
 
 # 終了かタグ及びジャンル追加
 def addTags(music,janl,tag):
-	print u'next:%s'%(music["music"])
+	print(u'next:%s'%(music["music"]))
 	sys.stdout.write(u'何かを入力したら終了:')
-	input = raw_input()
-	if input != "":
+	inputstr = input()
+	if inputstr!= "":
 		#終了フラグ
 		return music,True
 	music = addCategory("janl",janl,music,1)
@@ -193,8 +197,8 @@ def sortByRank(node,x):
 
 def loadfile(root):
 	#ファイルをロードするか選択
-	sys.stdout.write(u"ファイルをロードしますか(ロードする場合はファイル名を拡張子抜きで):")
-	fn = raw_input()
+	#sys.stdout.write(u)
+	fn = input("ファイルをロードしますか(ロードする場合はファイル名を拡張子抜きで):")
 	if fn != "":
 		#(ロードするファイルは木構造のファイル、残りの楽曲ファイル、ジャンルファイル)
 		#ロードする場合
@@ -222,7 +226,9 @@ def loadfile(root):
 		print_node_music(root,0)
 	else:
 		#ロードしない場合
-		L=getFilename(u"C:\\Users\\ark\\Music\\iTunes\\iTunes Media");
+		#L=getFilename(u"C:\\Users\\ark\\Music\\iTunes\\iTunes Media")
+		#L = getFilename("~/Music/iTunes/iTunes Media")
+		L = getFilename("/Users/arc/Music/iTunes/iTunes Media")
 		#L=getFilename(u"~/Desktop/testmusic")
 		janl = []
 		tag = []
@@ -231,27 +237,27 @@ def loadfile(root):
 def savefile(root,L,lastpath,janl,tag,fn):
 	if lastpath == "":
 		#(deleteとか含めていくと考えること増える気がするけど暫定的にこれで)
-		print u"多分変更箇所がありません C U again!"
+		print(u"多分変更箇所がありません C U again!")
 		return
 	#出力ファイル名設定
 	sys.stdout.write(u"出力ファイル名を入力(無入力だと入力ファイルと同様かsampleになります):")
-	input = raw_input()
-	if input == "":
+	inputstr= input()
+	if inputstr== "":
 		if fn == "":
 			fn = "sample"
 	else:
 		fn = input
 	#木の要素一つ一つに番号追加
 	ranking = rb.output_node(root)
-	print ranking
+	print(ranking)
 	i = 0
 	for j in ranking:
 		j["rank"]=i
 		i=i+1
 	#json形式で木を出力
-	#print ranking
+	#print(ranking)
 	with open(fn+'.json', 'w') as f:
-	    json.dump(ranking, f, sort_keys=True, indent=4)
+		json.dump(ranking, f, sort_keys=True, indent=4)
 	#fileから未挿入なので別ファイルに出力。ここでjson形式にした方がいのか疑問。
 	#まず配列から曲を削除
 	for i in range(L.index(lastpath)):
@@ -271,7 +277,7 @@ def savefile(root,L,lastpath,janl,tag,fn):
 def insertMusic(root,L,janl,tag):
 	lastpath = ""
 	for file in L:
-		print "--------------------------------"
+		print("--------------------------------")
 		temp={"path":file,"music":getmusicname(file)};
 		#ここから挿入する音楽の再生
 		playMusic(temp)
@@ -317,45 +323,46 @@ def Countmusic(L):
 		elif "m4a" in m:
 			m4a = m4a+1
 		else:
-			print "?"
-	print "mp3:%d,m4a:%d,all:%d"%(mp3,m4a,mp3+m4a)
+			print("?")
+	print("mp3:%d,m4a:%d,all:%d"%(mp3,m4a,mp3+m4a))
 
 if __name__ == '__main__':
-    #os.system("dir "+TARGETDIR)
-	root = rb.make_null();
+	#os.system("dir "+TARGETDIR)
+	root = rb.make_null()
 	#print root is rb.null
 	while True:
 		try:
 			root,L,janl,tag,fn=loadfile(root)
 			break
 		except:
-			print "ファイルの取得に失敗しました"
+			print("ファイルの取得に失敗しました")
 			continue
 	lastpath = ""
+	print(L)
 	#曲を挿入するか検索するか評価で並べるかを選択させる
 	while True:
-		print "What would u like to do?"
-		print "(0)Insert music"
-		print "(01)Insert music(shuffle music)"
-		print "(1)Delete music"
-		print "(2)Search by Title Tag or Janl"
-		print "(3)Print nodes of music"
-		print "(4)Count mp3 or m4a"
-		print "(999)save + exit"
-		input = raw_input()
-		if input == "0":
+		print("What would u like to do?")
+		print("(0)Insert music")
+		print("(01)Insert music(shuffle music)")
+		print("(1)Delete music")
+		print("(2)Search by Title Tag or Janl")
+		print("(3)Print nodes of music")
+		print("(4)Count mp3 or m4a")
+		print("(999)save + exit")
+		inputstr = input("")
+		if inputstr == "0":
 			#挿入させる場合
 			root,L,janl,lastpath = insertMusic(root,L,janl,tag)
-		elif input =="01":
+		elif inputstr =="01":
 			random.shuffle(L)
 			root,L,janl,lastpath = insertMusic(root,L,janl,tag)
-		elif input == "2":
+		elif inputstr == "2":
 			searchMusic(root)
-		elif input == "3":
+		elif inputstr == "3":
 			print_node_music(root,0)
-		elif input == "4":
+		elif inputstr == "4":
 			Countmusic(L)
-		elif input == "999":
+		elif inputstr == "999":
 			break
 
 	savefile(root,L,lastpath,janl,tag,fn)
