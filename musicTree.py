@@ -66,11 +66,12 @@ class Window(QMainWindow):
 		self.nextButton1.setToolTip("<h3>次へ</h3>")
 		self.nextButton1.clicked.connect(self.printMessage)
 
-		self.JacketButton2 = QPushButton("JacketButton2",self)
+		self.JacketButton2 = QPushButton("",self)
 		self.JacketButton2.move(220,120)
 		self.JacketButton2.resize(150,150)
 		self.JacketButton2.setToolTip("<h3>とじる</h3>")
 		self.JacketButton2.clicked.connect(self.Close)
+		self.JacketButton2.setIconSize(QSize(130,130))
 
 		self.backButton2 = QPushButton("B",self)
 		self.backButton2.move(35+190,280)
@@ -108,12 +109,13 @@ class Window(QMainWindow):
 		print(self.music[n].title)
 		#plt.imshow(self.music[n].img_numpy)
 		#plt.show()
-		pic = QtGui.QIcon(variant = self.music[n].img_numpy)
+		#print(self.music[n].picpath)
+		#pic = QtGui.QIcon(self.music[n].picpath)
 		#pic = create_QPixmap(self.music[n].img_pil.convert("RGBA"))
-		#if n == 0:
-		#	self.JacketButton1.setIcon(QtGui.QIcon(pic))
-		#else:
-		#	self.JacketButton2.setIcon(QtGui.QIcon(pic))
+		if n == 0:
+			self.JacketButton1.setIcon(QtGui.QIcon(self.music[n].picpath))
+		else:
+			self.JacketButton2.setIcon(QtGui.QIcon(self.music[n].picpath))
 
 
 	def InitWindow(self):
@@ -132,12 +134,30 @@ class Window(QMainWindow):
 		self.show()
 
 	def printMessage(self):
-		if self.sender()  == self.backButton2 or self.sender()  == self.backButton1:
+		if self.sender()  == self.backButton2:
+			self.music[0].pause()
+			self.music[1].play(rate = 0)
 			print("back")
-		elif self.sender()  == self.playButton2 or self.sender()  == self.playButton1:
+		elif self.sender()  == self.backButton1:
+			self.music[1].pause()
+			self.music[0].play(rate = 0)
+			print("back")
+		elif self.sender()  == self.playButton2:
+			self.music[0].pause()
+			self.music[1].play()
 			print("play")
-		elif self.sender()  == self.nextButton2 or self.sender()  == self.nextButton1:
-			print("next")
+		elif self.sender()  == self.playButton1:
+			self.music[1].pause()
+			self.music[0].play()
+			print("play")
+		elif self.sender()  == self.nextButton2:
+			self.music[1].pause()
+			#self.music[1].play()
+			print("next曲処理")
+		elif self.sender()  == self.nextButton1:
+			self.music[0].pause()
+			#self.music[0].play()
+			print("next曲処理")
 		#print(message)
 
 	def Close(self):
@@ -147,7 +167,7 @@ class Window(QMainWindow):
 def main():
 	App = QApplication(sys.argv)
 	path1 = r"/Users/arc/Music/iTunes/iTunes Media/Music/Toby Fox/DELTARUNE Chapter 1 OST/33 THE WORLD REVOLVING.mp3"
-	path2 = r"/Users/arc/Music/iTunes/iTunes Media/Music/Toby Fox/DELTARUNE Chapter 1 OST/33 THE WORLD REVOLVING.mp3"
+	path2 = r"/Users/arc/Music/iTunes/iTunes Media/Music/Pixel/洞窟物語/48 洞窟物語.mp3"
 	window = Window(path1,path2)
 	sys.exit(App.exec())
 

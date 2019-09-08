@@ -50,25 +50,39 @@ class musInfo:
 
 			#numpy配列(BGR) <- numpy配列(RGBA)
 			self.img_numpy_bgr = cv2.cvtColor(self.img_numpy, cv2.COLOR_RGBA2BGR)
+			#pictureのpath保存
+			#フォルダ作成
+			try:
+				os.mkdir("./pictures/")
+			except FileExistsError:
+				pass
+			self.picpath = "./pictures/{0}.jpg".format(self.title)
+			cv2.imwrite(self.picpath,self.img_numpy_bgr)
+		#再生準備
+		self.p = vlc.MediaPlayer()
+		print(self.path)
+		self.p.set_mrl(self.path)
 
 	def play(self,rate = -1,msec = -1):
-		p = vlc.MediaPlayer()
-		print(self.path)
-		p.set_mrl(self.path)
-		p.play()
-		print("type(self.length): {}".format(type(self.length)))
 		if rate >= 0:
-			#lengthからの割合
-			p.set_time(int(self.length * rate * 1000))
-			rest = self.length * (1-rate)	
+			#rateをもとに再生
+			self.p.set_time(int(self.length * rate * 1000))
 		elif msec >= 0:
 			#msecから再生
-			p.set_time(msec) #ms
-			rest = self.length - msec/1000
+			self.p.set_time(msec) #ms
 		else:
-			rest = self.length
+			pass
+		rest = self.length - self.p.get_time()	
+		if self.p.is_playing():
+			self.p.pause()
+		else:
+			self.p.play()
+
 		#残り時間を返す
 		return rest+1
+	def pause(self):
+		if self.p.is_playing():
+			self.p.pause()
 
 if __name__ == '__main__':
 	#とりあえず再生
