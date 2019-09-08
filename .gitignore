@@ -1,5 +1,8 @@
 # picturesフォルダ内は不要
-picture/
+pictures/
 
 #_から始まるフォルダは不要
-_*
+__pycache__/
+
+#testファイル不使用
+test*
