@@ -3,6 +3,7 @@ pictures/
 
 #_から始まるフォルダは不要
 __pycache__/
+_*/
 
 #testファイル不使用
 test*
