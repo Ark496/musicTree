@@ -12,11 +12,85 @@ import cv2
 import io
 from PIL import Image
 import numpy as np
+import subprocess
+import sys
+import pandas as pd
+import fileExistCheck
+import random
+class musicJson(object):
+	"""docstring for musicJson
+	iTunesから取得したjsonから曲をDataFrameで取得し、1曲ずつmusInfo型で返す
+	"""
+	#それぞれのユーザーによってフォルダ名は変わる
+	def __init__(self, path):
+		self.musicfld = "/Users/arc/Music/iTunes/iTunes Media/Music/"
+		"""
+		iTunesから取得したjsonをロードする。
+		ファイルがなければ作り、あればロードする。
+		まずは取得から
+		"""
+		super(musicJson, self).__init__()
+		self.arg = path
+		if os.path.isfile("./{}.json".format(path)):
+			print("{}.json は存在します".format(path))
+		else:
+			print("{}.json が存在しないので作成します".format(path))
+			try:
+				resultJson = subprocess.check_output(["osascript", "-l","JavaScript", "getAllTracks.js"])
+			except:
+				print("コマンド入力失敗")
+				sys.exit()
+			#取得できたら保存する
+			with open("./"+path+".json", mode='bw') as f:
+			    f.write(resultJson)
 
+			if os.path.isfile("./{}.json".format(path)):
+				print("{}.json作成成功".format(path))
+			else:
+				print("{}.json作成失敗".format(path))
+				print("終了します")
+				sys.exit()
+		with open("./"+path+'.json',"r") as f:
+			self.df = pd.read_json(f)#.set_index("id")
+		#print(df.sample(5))
+		#print(self.arg)
 
+	def maxIndex(self):
+		return max(self.df.index)
+
+	def getMusicInfo(self,ind):
+		"""
+		indexに対応するpathを入手し、それをdfにぶちこみつつ
+		musInfo型の曲を返す
+		"""
+		#musicFilePath列が存在し、
+		#すでにdf["musicFilePath"]にパスが入っていたら
+		if "musicFilePath" in self.df.columns:
+			print("te")
+			print(self.df.loc[ind,"musicFilePath"])
+			print("te")
+		else:
+			print("?")
+		if "musicFilePath" in self.df.columns and self.df.loc[ind,"musicFilePath"]:
+			print("すでに取得できています")
+			return musInfo(self.df.loc[ind,"musicFilePath"])
+		else:
+			gettable,path = fileExistCheck.fileCheck(self.df.loc[ind,:],self.musicfld)
+			if gettable:
+				#pathが入手できていたら
+				self.df.loc[ind,"musicFilePath"] = path
+				return musInfo(path)
+			else:
+				#楽曲が存在しない
+				print("取得不可: {}".format(path[0]))
+				return 0
+		pass
+
+		
 # 節
 class musInfo:
 	def __init__(self, path):
+		print(path)
 		mp3 = MP3(path)
 		#曲の属性集
 		info = mp3.info
@@ -85,10 +159,31 @@ class musInfo:
 			self.p.pause()
 
 if __name__ == '__main__':
+	test01 = musicJson("test")
+	#曲の取得
+	test = test01.getMusicInfo(random.randrange(0,test01.maxIndex()))
+	#test = test01.getMusicInfo(2000)
+	if test:
+		print(test)
+		rest = test.play(msec = 0)
+		time.sleep(rest)
+	else:
+		print("取得不可")
+	"""
+	mp3以外のファイルであっても楽曲情報の取得ができて再生できないとだめじゃん
+	"""
+	"""
+	print(test.length)
+	rest = test.play(msec = 95000)
+	print("{}秒間再生".format(rest))
+	time.sleep(rest)
+	"""
 	#とりあえず再生
-	path = r"/Users/arc/Music/iTunes/iTunes Media/Music/Toby Fox/DELTARUNE Chapter 1 OST/33 THE WORLD REVOLVING.mp3"
+	"""
+	path = r"/Users/arc/Music/iTunes/iTunes Media/Music/福山雅治/ガリレオ オリジナルサウンドトラック/06 KISSして ～epilogue～ (solo piano ver.).mp3"
 	test = musInfo(path)
 	print(test.length)
 	rest = test.play(msec = 95000)
 	print("{}秒間再生".format(rest))
 	time.sleep(rest)
+	"""
