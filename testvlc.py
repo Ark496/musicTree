@@ -54,7 +54,8 @@ def getMP3info(path):
 
 if __name__ == '__main__':
 	#とりあえず再生
-	path = r"/Users/arc/Music/iTunes/iTunes Media/Music/Toby Fox/DELTARUNE Chapter 1 OST/33 THE WORLD REVOLVING.mp3"
+	#path = r"/Users/arc/Music/iTunes/iTunes Media/Music/Toby Fox/DELTARUNE Chapter 1 OST/33 THE WORLD REVOLVING.mp3"
+	path = r"/Users/arc/Music/iTunes/iTunes Media/Music/Compilations/beatmania IIDX 20 tricoro ORIGINAL SOUNDTRACK Vol. 1 [Disc 1]/1-31 Breaking Dawn.m4a"
 	#ファイルがあるか確認
 	"""
 	if os.path.exists(path):
