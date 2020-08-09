@@ -3,7 +3,6 @@
 # 楽曲再生
 #楽曲情報取得
 
-import vlc
 import os
 import time
 from mutagen.easyid3 import EasyID3
@@ -17,13 +16,14 @@ import sys
 import pandas as pd
 import fileExistCheck
 import random
+#import vlc
 class musicJson(object):
 	"""docstring for musicJson
 	iTunesから取得したjsonから曲をDataFrameで取得し、1曲ずつmusInfo型で返す
 	"""
 	#それぞれのユーザーによってフォルダ名は変わる
 	def __init__(self, path):
-		self.musicfld = "/Users/arc/Music/iTunes/iTunes Media/Music/"
+		self.musicfld = "/Users/ark/Music/iTunes/iTunes Media/Music/"
 		"""
 		iTunesから取得したjsonをロードする。
 		ファイルがなければ作り、あればロードする。

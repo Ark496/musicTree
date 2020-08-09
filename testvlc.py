@@ -72,4 +72,3 @@ if __name__ == '__main__':
 	p.play()
 	p.set_time(90000) #ms
 	time.sleep(100)
-

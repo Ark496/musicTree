@@ -3,7 +3,8 @@ pictures/
 
 #_から始まるフォルダは不要
 __pycache__/
+output/
 _*/
-
+.vscode/
 #testファイル不使用
 test*
