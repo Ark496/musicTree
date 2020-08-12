@@ -312,6 +312,8 @@ if __name__ == '__main__':
         root, _ = insert(root, x)
         root.color = BLACK
         check_rbtree(root)
+        print_node(root,1)
+        print("------")
     print("---------------")
     print_node(root,0)
     print("---------------")
@@ -333,7 +335,7 @@ if __name__ == '__main__':
     print("")   
     print("---------------")
     print('delete test')
-    
+    """
     for x in buff:
         print(x)
         print("delete")
@@ -342,3 +344,4 @@ if __name__ == '__main__':
         check_rbtree(root)
         #print_node(root,0)
         #print("---------------"
+    """
